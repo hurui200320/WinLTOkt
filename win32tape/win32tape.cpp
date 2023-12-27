@@ -1,6 +1,7 @@
 #include "win32tape.h"
 
 #include <windows.h>
+#include <ntddscsi.h>
 #include <iostream>
 
 
@@ -32,58 +33,51 @@ DWORD getDeviceStatus(HANDLE handle) {
 }
 
 DWORD getTapeDriveParameter(HANDLE device, TapeInfo *result) {
+    TAPE_GET_DRIVE_PARAMETERS p;
     DWORD size = sizeof(TAPE_GET_DRIVE_PARAMETERS);
-    auto p = (PTAPE_GET_DRIVE_PARAMETERS) malloc(size);
     DWORD ret = GetTapeParameters(
-            device,
-            GET_TAPE_DRIVE_INFORMATION,
-            &size,
-            p
+            device, GET_TAPE_DRIVE_INFORMATION,
+            &size, &p
     );
     if (ret != NO_ERROR) return ret;
 
-    result->driveECC = p->ECC;
-    result->driveCompression = p->Compression;
-    result->driveDataPadding = p->DataPadding;
-    result->driveReportSetmarks = p->ReportSetmarks;
-    result->driveDefaultBlockSize = p->DefaultBlockSize;
-    result->driveMaximumBlockSize = p->MaximumBlockSize;
-    result->driveMinimumBlockSize = p->MinimumBlockSize;
-    result->driveMaximumPartitionCount = p->MaximumPartitionCount;
-    result->driveFeaturesLow = p->FeaturesLow;
-    result->driveFeaturesHigh = p->FeaturesHigh;
-    result->driveEOTWarningZoneSize = p->EOTWarningZoneSize;
+    result->driveECC = p.ECC;
+    result->driveCompression = p.Compression;
+    result->driveDataPadding = p.DataPadding;
+    result->driveReportSetmarks = p.ReportSetmarks;
+    result->driveDefaultBlockSize = p.DefaultBlockSize;
+    result->driveMaximumBlockSize = p.MaximumBlockSize;
+    result->driveMinimumBlockSize = p.MinimumBlockSize;
+    result->driveMaximumPartitionCount = p.MaximumPartitionCount;
+    result->driveFeaturesLow = p.FeaturesLow;
+    result->driveFeaturesHigh = p.FeaturesHigh;
+    result->driveEOTWarningZoneSize = p.EOTWarningZoneSize;
 
-    free(p);
     return NO_ERROR;
 }
 
 DWORD getTapeMediaParameter(HANDLE device, TapeInfo *result) {
+    TAPE_GET_MEDIA_PARAMETERS p;
     DWORD size = sizeof(TAPE_GET_MEDIA_PARAMETERS);
-    auto p = (PTAPE_GET_MEDIA_PARAMETERS) malloc(size);
     DWORD ret = GetTapeParameters(
-            device,
-            GET_TAPE_MEDIA_INFORMATION,
-            &size,
-            p
+            device, GET_TAPE_MEDIA_INFORMATION,
+            &size, &p
     );
     if (ret != NO_ERROR) return ret;
 
-    result->mediaCapacity = p->Capacity.QuadPart;
-    result->mediaRemaining = p->Remaining.QuadPart;
-    result->mediaBlockSize = p->BlockSize;
-    result->mediaPartitionCount = p->PartitionCount;
-    result->mediaWriteProtected = p->WriteProtected;
+    result->mediaCapacity = p.Capacity.QuadPart;
+    result->mediaRemaining = p.Remaining.QuadPart;
+    result->mediaBlockSize = p.BlockSize;
+    result->mediaPartitionCount = p.PartitionCount;
+    result->mediaWriteProtected = p.WriteProtected;
 
-    free(p);
     return NO_ERROR;
 }
 
 DWORD getTapeInfo(HANDLE handle, TapeInfo *result) {
     auto ret = getTapeDriveParameter(handle, result);
     if (ret != NO_ERROR) return ret;
-    ret = getTapeMediaParameter(handle, result);
-    return ret;
+    return getTapeMediaParameter(handle, result);
 }
 
 DWORD loadTape(HANDLE handle) {
@@ -110,49 +104,45 @@ DWORD setTapeDriveParameters(
         bool reportSetmarks,
         unsigned long eotWarningZoneSize
 ) {
-    auto p = (PTAPE_SET_DRIVE_PARAMETERS) malloc(sizeof(TAPE_SET_DRIVE_PARAMETERS));
-    p->ECC = ecc;
-    p->Compression = compression;
-    p->DataPadding = dataPadding;
-    p->ReportSetmarks = reportSetmarks;
-    p->EOTWarningZoneSize = eotWarningZoneSize;
-    auto ret = SetTapeParameters(handle, SET_TAPE_DRIVE_INFORMATION, p);
-    free(p);
-    return ret;
+    TAPE_SET_DRIVE_PARAMETERS p = {
+            .ECC = ecc,
+            .Compression = compression,
+            .DataPadding = dataPadding,
+            .ReportSetmarks = reportSetmarks,
+            .EOTWarningZoneSize = eotWarningZoneSize
+    };
+    return SetTapeParameters(handle, SET_TAPE_DRIVE_INFORMATION, &p);
 }
 
 DWORD setTapeMediaParameters(
         HANDLE handle,
         unsigned long blockSize
 ) {
-    auto p = (PTAPE_SET_MEDIA_PARAMETERS) malloc(sizeof(TAPE_SET_MEDIA_PARAMETERS));
-    p->BlockSize = blockSize;
-    auto ret = SetTapeParameters(handle, SET_TAPE_MEDIA_INFORMATION, p);
-    free(p);
-    return ret;
+    TAPE_SET_MEDIA_PARAMETERS p = {
+            .BlockSize = blockSize
+    };
+    return SetTapeParameters(handle, SET_TAPE_MEDIA_INFORMATION, &p);
 }
 
 DWORD setTapeDriveCompression(
         HANDLE handle,
         bool compression
 ) {
-    auto tapeInfo = (TapeInfo *) malloc(sizeof(TapeInfo));
-    memset(tapeInfo, 0, sizeof(TapeInfo));
-    auto ret = getTapeInfo(handle, tapeInfo);
+    TapeInfo tapeInfo;
+    memset(&tapeInfo, 0, sizeof(TapeInfo));
+    auto ret = getTapeInfo(handle, &tapeInfo);
     // has error and not media not found
     if (ret != NO_ERROR && ret != ERROR_NO_MEDIA_IN_DRIVE) {
         return ret;
     }
-    ret = setTapeDriveParameters(
+    return setTapeDriveParameters(
             handle,
-            tapeInfo->driveECC,
+            tapeInfo.driveECC,
             compression,
-            tapeInfo->driveDataPadding,
-            tapeInfo->driveReportSetmarks,
-            tapeInfo->driveEOTWarningZoneSize
+            tapeInfo.driveDataPadding,
+            tapeInfo.driveReportSetmarks,
+            tapeInfo.driveEOTWarningZoneSize
     );
-    free(tapeInfo);
-    return ret;
 }
 
 DWORD getTapeAbsolutePosition(

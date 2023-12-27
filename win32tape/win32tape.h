@@ -306,10 +306,6 @@ __declspec(dllexport) Ret readTape(
 /**
  * Write to tape.
  * <br/>
- * The data is written in complete blocks. If the tape's block size is 512 bytes,
- * all write operations must use buffers that are simple integer multiples of
- * that block size: 512, 1024, 1536, 2048, and so on.
- * <br/>
  * If writeTape encounters a non-overwrite-able file mark, the function fails
  * with an returned error code indicating the type of file mark that was
  * encountered (ERROR_FILEMARK_DETECTED 1101 or ERROR_SETMARK_DETECTED 1103).

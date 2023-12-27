@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 project(win32tape C CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 # we use `__declspec(dllexport)` instead of this option
 #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(CMAKE_SYSTEM_NAME Windows)
