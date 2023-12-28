@@ -3,7 +3,12 @@
 
 // if not in cpp, include stdbool,
 // so we can use bool and jextract know it.
-#ifndef __cplusplus
+#ifdef __cplusplus
+// let cpp compiler knows this is C header, otherwise the JVM can't use dll
+// CPP by default will change symbol name from `openDevice` to `?openDevice@@YAPEAXPEBDPEAK@Z`
+// this will disable the renaming
+extern "C" {
+#else
 #include <stdbool.h>
 #endif
 
@@ -138,7 +143,7 @@ __declspec(dllexport) Ret getTapeAbsolutePosition(
 /**
  * Seek to a given device-specific block address.
  *
- * @param offsetLow 64bit offset, must not be negative.
+ * @param offset 64bit offset, must not be negative.
  * @returns 0 if success.
  * */
 __declspec(dllexport) Ret seekTapeAbsolutePosition(
@@ -179,7 +184,7 @@ __declspec(dllexport) Ret seekTapeLogicalPosition(
  *
  * @returns 0 if success.
  * */
-__declspec(dllexport) Ret rewind(Device handle);
+__declspec(dllexport) Ret rewindTape(Device handle);
 
 /**
  * Move the tape to the End Of Data of the given partition.
@@ -326,6 +331,8 @@ __declspec(dllexport) Ret writeTape(
         unsigned long *writeBytesCount
 );
 
-// TODO: LTO Encryption?
+#ifdef __cplusplus
+}
+#endif
 
 #endif //WIN32TAPE_H

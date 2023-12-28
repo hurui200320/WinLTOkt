@@ -1,0 +1,28 @@
+#### Extracted from: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+# removed non LTO functions like setmark, etc.
+--include-function closeDevice              # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function eraseTape                # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function getDeviceStatus          # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function getTapeAbsolutePosition  # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function getTapeInfo              # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function getTapeLogicalPosition   # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function loadTape                 # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function lockTape                 # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function openDevice               # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function readTape                 # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function rewindTape               # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function seekFileMarks            # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function seekTapeAbsolutePosition # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function seekTapeLogicalPosition  # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function seekToEOD                # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function setTapeDriveCompression  # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function setTapeDriveParameters   # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function setTapeMediaParameters   # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function unloadTape               # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function unlockTape               # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function writeFileMarks           # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-function writeTape                # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-typedef Device                    # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-typedef Ret                       # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-typedef TapeInfo                  # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h
+--include-typedef pRet                      # header: D:\Git\github\WinLTOkt\win32tape\win32tape.h

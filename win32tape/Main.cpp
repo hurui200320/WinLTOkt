@@ -47,61 +47,18 @@ void readTest(Device handle, unsigned long bufferSize) {
     free(buffer);
 }
 
-void rewindTape(Device handle) {
+void rewindTapeSafe(Device handle) {
     std::cout << "\nrewind" << std::endl;
-    assert(rewind(handle) == NO_ERROR);
+    assert(rewindTape(handle) == NO_ERROR);
     printPos(handle);
 }
-
 
 int main() {
     Ret ret = 0;
     auto handle = openDevice(R"(\\.\TAPE0)", &ret);
     setTapeDriveCompression(handle, false);
-//    rewindTape(handle);
+    rewindTapeSafe(handle);
 
-    std::cout << "\nget tape info" << std::endl;
-    auto tapeInfo = (TapeInfo *) malloc(sizeof(TapeInfo));
-    ret = getTapeInfo(handle, tapeInfo);
-    assert(ret == NO_ERROR);
-    std::cout << "block size: " << tapeInfo->mediaBlockSize << std::endl;
-    // 256MB buffer
-    auto bufferSize = max(tapeInfo->mediaBlockSize, 256 * 1024 * 1024);
-    std::cout << "bufferSize: " << bufferSize << std::endl;
-
-    ret = seekTapeAbsolutePosition(handle, 100000000L);
-    assert(ret == NO_ERROR);
-    printPos(handle);
-    auto buffer = malloc(bufferSize);
-    unsigned long writeCount = 0;
-    unsigned long long totalWriteCounter = 0;
-
-    for (int i = 0; i < 5; ++i) {
-        ret = writeTape(handle, buffer, bufferSize, &writeCount);
-        if (ret != NO_ERROR) {
-            // File mark -> stop current reading
-            if (ret == ERROR_FILEMARK_DETECTED) break;
-                // EOM -> stop reading
-//            else if (ret == ERROR_NO_DATA_DETECTED) goto exitReadingLoop;
-            else {
-                std::cerr << "ret: " << ret << std::endl;
-                assert(ret == NO_ERROR);
-            }
-        }
-        totalWriteCounter += writeCount;
-        std::cout << "write: " <<  writeCount << std::endl;
-    }
-    writeFileMarks(handle, 1);
-    std::cout << "total write: " <<  totalWriteCounter << std::endl;
-    printPos(handle);
-
-    rewindTape(handle);
-    seekTapeAbsolutePosition(handle, 1);
-    printPos(handle);
-    std::cout << "\nread" << std::endl;
-    readTest(handle, bufferSize);
-
-    free(tapeInfo);
     closeDevice(handle);
     return 0;
 }

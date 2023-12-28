@@ -1,11 +1,9 @@
 #include "win32tape.h"
 
 #include <windows.h>
-#include <ntddscsi.h>
 #include <iostream>
 
-
-void *openDevice(LPCSTR deviceName, LPDWORD err) {
+Device openDevice(const char *deviceName, pRet err) {
     auto tape = CreateFileA(
             deviceName,
             GENERIC_ALL,
@@ -204,7 +202,7 @@ DWORD seekTapeLogicalPosition(
     );
 }
 
-DWORD rewind(HANDLE handle) {
+DWORD rewindTape(HANDLE handle) {
     return SetTapePosition(
             handle, TAPE_REWIND,
             0, 0, 0,

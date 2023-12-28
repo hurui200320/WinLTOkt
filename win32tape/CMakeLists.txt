@@ -12,5 +12,6 @@ add_custom_command(TARGET win32tape
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:win32tape> "${CMAKE_CURRENT_SOURCE_DIR}/.."
         COMMENT "Copy dll file to parent directory" VERBATIM
 )
+
 add_executable(main Main.cpp)
 target_link_libraries(main win32tape)
