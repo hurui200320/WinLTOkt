@@ -19,3 +19,9 @@ tasks.test {
 kotlin {
     jvmToolchain(21)
 }
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+tasks.withType<Test>().configureEach {
+    jvmArgs("--enable-preview", "--enable-native-access=ALL-UNNAMED", "-Djava.library.path=${File(".").canonicalPath}")
+}
