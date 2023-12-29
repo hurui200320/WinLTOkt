@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.21"
-    publishing
+    `maven-publish`
 }
 
 group = "info.skyblond"
