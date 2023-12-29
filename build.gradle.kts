@@ -26,3 +26,14 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Test>().configureEach {
     jvmArgs("--enable-preview", "--enable-native-access=ALL-UNNAMED", "-Djava.library.path=${File(".").canonicalPath}")
 }
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = rootProject.group.toString()
+            artifactId = rootProject.name
+            version = rootProject.version.toString()
+
+            from(components["java"])
+        }
+    }
+}
