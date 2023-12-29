@@ -4,7 +4,7 @@ import kotlin.random.Random
 import kotlin.time.measureTime
 
 // jextract -t jextract.win32tape --header-class-name Win32Tape --output ..\src\main\java\ --source '@includes.txt' .\win32tape.h
-object Main {
+object SpeedTest {
 
     // 1GB * 8
     private const val DATA_SIZE = 1 * 1024 * 1024 * 1024
@@ -18,17 +18,16 @@ object Main {
         device.getDeviceStatus().also { println(it) }
 
         println("Rewinding...")
-        device.rewindTape()
+        device.seekTapeLogicalPosition(1, 0)
 
         val data = Random.nextBytes(DATA_SIZE)
-        device.seekTapeLogicalPosition(1, 0)
-        device.getTapeLogicalPosition().also { println(it) }
+        device.getTapeLogicalPosition().also { println("Pos: $it") }
         println("Start writing...")
         val writeTiming = measureTime {
             BufferedTapeOutputStream(device, startPos = 1 to 0)
                 .use { s -> repeat(REPEAT_N) { s.write(data) } }
         }
-        device.getTapeLogicalPosition().also { println(it) }
+        device.getTapeLogicalPosition().also { println("Pos: $it") }
 
         println("Rewinding...")
         device.rewindTape()
@@ -41,7 +40,7 @@ object Main {
                 check(s.read() == -1)
             }
         }
-        device.getTapeLogicalPosition().also { println(it) }
+        device.getTapeLogicalPosition().also { println("Pos: $it") }
         println("Write time: ${DATA_SIZE.toLong() * REPEAT_N / writeTiming.inWholeSeconds}B/s")
         println("Read time: ${DATA_SIZE.toLong() * REPEAT_N / readTiming.inWholeSeconds}B/s")
 
