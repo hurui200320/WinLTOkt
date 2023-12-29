@@ -1,4 +1,4 @@
-package info.skyblond.info.skyblond.win32tape
+package info.skyblond.win32tape
 
 import java.io.InputStream
 import java.lang.foreign.Arena

@@ -1,4 +1,4 @@
-package info.skyblond.info.skyblond.win32tape
+package info.skyblond.win32tape
 
 import jextract.win32tape.Win32Tape
 import java.io.File

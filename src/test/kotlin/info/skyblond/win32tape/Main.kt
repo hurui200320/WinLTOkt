@@ -1,8 +1,5 @@
 package info.skyblond.win32tape
 
-import info.skyblond.info.skyblond.win32tape.BufferedTapeInputStream
-import info.skyblond.info.skyblond.win32tape.BufferedTapeOutputStream
-import info.skyblond.info.skyblond.win32tape.TapeDrive
 import kotlin.random.Random
 import kotlin.time.measureTime
 
@@ -23,7 +20,6 @@ object Main {
         println("Rewinding...")
         device.rewindTape()
 
-
         val data = Random.nextBytes(DATA_SIZE)
         device.seekTapeLogicalPosition(1, 0)
         device.getTapeLogicalPosition().also { println(it) }
@@ -36,7 +32,7 @@ object Main {
 
         println("Rewinding...")
         device.rewindTape()
-        device.seekTapeLogicalPosition( 1, 0)
+        device.seekTapeLogicalPosition(1, 0)
         val data2 = Random.nextBytes(DATA_SIZE)
         println("Start reading...")
         val readTiming = measureTime {

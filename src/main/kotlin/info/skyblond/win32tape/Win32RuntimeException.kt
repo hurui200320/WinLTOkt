@@ -1,4 +1,4 @@
-package info.skyblond.info.skyblond.win32tape
+package info.skyblond.win32tape
 
 class Win32RuntimeException(
     operation: String,
