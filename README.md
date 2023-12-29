@@ -41,7 +41,7 @@ All I have is a second-hand LTO-6 drive, it's good enough for me.
 
 ## Usage?
 
-Unfortunately, this package is not released to maven or even jitpack.
+Unfortunately, this package is not released to maven or even [jitpack](https://jitpack.io/#info.skyblond/WinLTOkt).
 Since C/C++ code is involved.
 Current solution is including the prebuilt dll file in the resource file,
 during loading the `TapeDrive` class, it will automatically write to either
