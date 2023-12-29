@@ -1,6 +1,7 @@
 package info.skyblond.info.skyblond.win32tape
 
 import jextract.win32tape.Win32Tape
+import java.io.File
 import java.lang.foreign.Arena
 import java.lang.foreign.MemorySegment
 import java.lang.foreign.ValueLayout
@@ -12,6 +13,25 @@ class TapeDrive(
     private val device: MemorySegment
 ) : AutoCloseable {
     companion object {
+
+        // write dll and load it
+        init {
+            val userHome = System.getProperty("user.home")
+            val ddlFile = if (userHome != null) {
+                val folder = File("${userHome}/.win32tape")
+                folder.mkdirs()
+                File(folder, "win32tape.dll")
+            } else {
+                File.createTempFile("win32tape", ".dll").also { it.deleteOnExit() }
+            }
+            this::class.java.getResourceAsStream("/win32tape.dll")!!.use { dll ->
+                ddlFile.outputStream().use { local ->
+                    dll.copyTo(local, 4096)
+                }
+            }
+            System.load(ddlFile.canonicalPath)
+        }
+
         /**
          * Open a device using the given deviceName.
          *

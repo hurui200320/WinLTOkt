@@ -15,7 +15,6 @@ object Main {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        System.loadLibrary("win32tape")
         val device = TapeDrive("\\\\.\\TAPE0")
         device.setTapeDriveCompression(false)
         device.getTapeInfo().also { println(it) }
